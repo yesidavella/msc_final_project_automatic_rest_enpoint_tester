@@ -1,7 +1,6 @@
 from swagger_parser import SwaggerParser
 
 from testing.NumberGen import NumberGen
-from testing.Testing import Testing
 from testing.Cat import Cat
 from testing.Dog import Dog
 
