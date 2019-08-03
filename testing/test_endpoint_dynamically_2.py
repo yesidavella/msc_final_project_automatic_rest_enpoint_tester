@@ -21,7 +21,7 @@ class TestProvider:
             with client:
                 rv = client.get('/basic/' + str(id), query_string={'param': str(param)})
                 print(rv._status_code)
-                self.assertEqual(rv._status_code, 303, "hablando mierda")
+                self.assertEqual(rv._status_code, 303, "Failed in test with name: "+description)
 
         return test_rest_endpoint
 
@@ -31,9 +31,9 @@ def main():
 
     for test_name, id, param in testsmap:
         print("forrrrrrrrrrrrrrrrrrr")
-        test_func = TestProvider.make_test_function("genericoo", id, param)
         klassname = 'Test_{0}'.format(test_name)
         method_name = 'test_gen_{0}'.format(test_name)
+        test_func = TestProvider.make_test_function(klassname, id, param)
         globals()[klassname] = type(klassname, (DynamicClassBase,),{method_name: test_func})
 
 
