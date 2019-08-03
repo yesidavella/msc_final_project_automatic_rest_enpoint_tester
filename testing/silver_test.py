@@ -27,7 +27,7 @@ class SilverTest:
             print("Querying DB - basic_get()")
             print("Checking queues - basic_get()")
 
-            status_code = 305
+            status_code = 303
             answ = "All process carried out completely - basic_get()"
 
 

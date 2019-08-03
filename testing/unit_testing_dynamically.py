@@ -18,4 +18,4 @@ def load_tests(loader, tests, pattern):
         test_cases.addTest(GeneralTestCase('runTest', p1, p2))
     return test_cases
 
-    unittest.main()
+    # unittest.main()
