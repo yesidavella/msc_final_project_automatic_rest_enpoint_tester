@@ -32,7 +32,7 @@ def main():
     testsmap = [('foo', 1, "111111"), ('bar', 2, "2222222222"), ('goo', 3, "333333333")]
 
     for test_name, id, param in testsmap:
-        print("forrrrrrrrrrrrrrrrrrr")
+        # print("forrrrrrrrrrrrrrrrrrr")
         klassname = 'Test_{0}'.format(test_name)
         method_name = 'test_gen_{0}'.format(test_name)
         test_func = TestProvider.make_test_function(klassname, id, param)
@@ -41,6 +41,7 @@ def main():
     unittest.main()
 
 main()
+
 # def suite():
 #     suite = unittest.TestSuite()
 #     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestApp))
