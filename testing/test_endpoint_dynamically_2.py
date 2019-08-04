@@ -1,7 +1,8 @@
 from flask import Flask, request
 
-from testing.silver_test import app
+from silver_test import app
 import unittest
+
 
 class DynamicClassBase(unittest.TestCase):
     longMessage = True
@@ -27,6 +28,7 @@ class TestProvider:
 
 
 def main():
+    # testsmap = [('foo', 1, "111111"), ('bar', 2, "2222222222"), ('goo', 3, "333333333"), ('doo', -1, "-111111")]
     testsmap = [('foo', 1, "111111"), ('bar', 2, "2222222222"), ('goo', 3, "333333333")]
 
     for test_name, id, param in testsmap:
@@ -36,7 +38,22 @@ def main():
         test_func = TestProvider.make_test_function(klassname, id, param)
         globals()[klassname] = type(klassname, (DynamicClassBase,),{method_name: test_func})
 
+    unittest.main()
 
 main()
+# def suite():
+#     suite = unittest.TestSuite()
+#     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestApp))
+#
+#     return suite
+#
+#
+# if __name__ == "__main__":
+#     unittest.TextTestRunner(verbosity=2).run(suite())
 # Execute this with this command:
-#     /home/yesid/OneDrive/msc_project/py3_venv/bin/python -m unittest testing/test_endpoint_dynamically_2.py
+# wrong /home/yesid/OneDrive/msc_project/py3_venv/bin/python -m unittest testing/test_endpoint_dynamically_2.py
+#
+# TO EXECUTEEEEEEEEEEEEE
+#
+# coverage run test_endpoint_dynamically_2.py
+# coverage xml
