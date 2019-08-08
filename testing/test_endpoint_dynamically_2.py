@@ -2,6 +2,7 @@ from flask import Flask, request
 
 from silver_test import app
 import unittest
+import inspect
 
 
 class DynamicClassBase(unittest.TestCase):
@@ -22,7 +23,7 @@ class TestProvider:
             with client:
                 rv = client.get('/basic/' + str(id), query_string={'param': str(param)})
                 print(rv._status_code)
-                self.assertEqual(rv._status_code, 303, "Failed in test with name: "+description)
+                self.assertEqual(rv._status_code, 305, "Failed in test with name: "+description)
 
         return test_rest_endpoint
 
@@ -30,6 +31,7 @@ class TestProvider:
 def main():
     # testsmap = [('foo', 1, "111111"), ('bar', 2, "2222222222"), ('goo', 3, "333333333"), ('doo', -1, "-111111")]
     testsmap = [('foo', 1, "111111"), ('bar', 2, "2222222222"), ('goo', 3, "333333333")]
+    # testsmap = [('foo', 1, "valorparammmmmm")]
 
     for test_name, id, param in testsmap:
         # print("forrrrrrrrrrrrrrrrrrr")
@@ -37,6 +39,9 @@ def main():
         method_name = 'test_gen_{0}'.format(test_name)
         test_func = TestProvider.make_test_function(klassname, id, param)
         globals()[klassname] = type(klassname, (DynamicClassBase,),{method_name: test_func})
+        # func_lines = inspect.getsource(test_func).co_code
+        # print(func_lines)
+
 
     unittest.main()
 
@@ -58,3 +63,6 @@ main()
 #
 # coverage run test_endpoint_dynamically_2.py
 # coverage xml
+
+# coverage run --source=silver_test test_endpoint_dynamically_2.py
+#  coverage report -m
