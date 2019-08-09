@@ -1,23 +1,11 @@
 from swagger_parser import SwaggerParser
-
-from testing.NumberGen import NumberGen
-from testing.Cat import Cat
-from testing.Dog import Dog
+from StringGen import StringGen
+from NumberGen import NumberGen
 
 
-def get_paths(parser):
-    return parser.specification["paths"]
+def get_genes_from_file():
 
-
-def process_params(id):
-
-    # gen = NumberGen(1, 1, 10)
-    # n = 0
-    # while n != id:
-    #     n = gen.mutate()
-    #     print(n)
-
-    parser = SwaggerParser(swagger_path='swagger/swagger.json')
+    parser = SwaggerParser(swagger_path='../swagger/swagger.json')
     paths = get_paths(parser)
 
     paths_dict = {}
@@ -38,17 +26,23 @@ def process_params(id):
                 name = param["name"]
                 required = param["required"]
                 type = param["type"]
-                print(name + str(required) + type)
 
                 if param["type"] == 'integer':
                     numberGen = NumberGen(name, 0, int(param["minimum"]), int(param["maximum"]))
                     genes_list.append(numberGen)
+                if param["type"] == 'string':
+                    stringGen = StringGen(name, required, "", 3)
+                    genes_list.append(stringGen)
+
             # Adding genes list to the verbs_dict
             verbs_dict[verb] = genes_list
 
         # Adding genes list to the verbs_dict
         paths_dict[path] = verbs_dict
 
-        print(paths_dict)
 
     return paths_dict
+
+
+def get_paths(parser):
+    return parser.specification["paths"]

@@ -45,7 +45,7 @@
             "minimum": 1,
             "maximum": 100,
             "required": false,
-            "description": "The number of items to return."
+            "description": "The number of items allowed to return."
           }
         ],
         "responses": {
