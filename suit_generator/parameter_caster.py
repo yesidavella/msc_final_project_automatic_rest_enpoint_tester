@@ -29,6 +29,33 @@ def ger_params_as_tuple_list(argv):
     return param_array
 
 
+def get_coverage_percentage(bytes_object):
+    cov_metrics_dict = {}
+
+    string_cov_info = bytes_object.decode().splitlines()
+    # 'Name          Stmts   Miss  Cover   Missing'
+    title_array = string_cov_info[0].strip().split(" ")
+    value_array = string_cov_info[2].strip().split("  ")
+
+    clear_title_array = clear_array_of_spaces(title_array)
+    clear_value_array = clear_array_of_spaces(value_array)
+
+    for index, title in enumerate(clear_title_array):
+        cov_metrics_dict[title] = clear_value_array[index]
+
+    return cov_metrics_dict
+
+
+def clear_array_of_spaces(dirty_array):
+
+    clean_title_list = []
+    for index, title in enumerate(dirty_array):
+        if title.strip() != "":
+            clean_title_list.append(title.strip())
+
+    return clean_title_list
+
+
 if __name__ == "__main__":
     main(sys.argv)
 

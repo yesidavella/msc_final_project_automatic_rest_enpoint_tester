@@ -1,6 +1,7 @@
 import logging
 import subprocess
 import swagger_interpreter
+import parameter_caster
 
 logging.basicConfig(filename='../logs/suit_gen_main.log', level=logging.DEBUG)
 
@@ -26,7 +27,7 @@ if __name__ == '__main__':
                     genes_in_string_format += "%s=%s," % (gen.get_name(), gen.get_value())
 
             logging.info("Suit_gen_main genes to invoke test {}".format(genes_in_string_format))
-            print(genes_in_string_format)
+            print(genes_in_string_format + " Verb name:" + verbs_name)
 
             exec_list_params = ['coverage', 'run', '--source=endpoint', 'dynamic_tester.py', genes_in_string_format]
             run_test_suite_proc = subprocess.Popen(exec_list_params, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -35,10 +36,9 @@ if __name__ == '__main__':
             console_coverage_report_process = subprocess.Popen(['coverage', 'report', '-m'],
                                                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             stdout, stderr = console_coverage_report_process.communicate()
-            print(stdout)
-    #
-    # status_code = console_coverage_report_process.wait()
-    #
-    # print("El codigo de estado es: " + str(status_code))
-    # stdout, stderr = console_coverage_report_process.communicate()
-    print("Finallll")
+            coverage_metrics_dict = parameter_caster.get_coverage_percentage(stdout)
+
+            print(str(coverage_metrics_dict))
+
+            erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            erase_process.wait()
