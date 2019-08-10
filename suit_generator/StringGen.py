@@ -30,6 +30,7 @@ class StringGen:
 
     def mutate(self):
         size = self.get_size()
-        chars = string.ascii_lowercase + size*" "
+        # chars = string.ascii_lowercase + size*" "
+        chars = string.ascii_lowercase
         self.set_value(''.join(random.choice(chars) for _ in range(size)))
         return self.get_value()

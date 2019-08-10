@@ -20,13 +20,19 @@ class DynamicTester:
             print("ID - Querying DB - validating resultset")
             print("ID - Querying DB - setting some data")
 
-        if limit > 100:
+        if limit > 80:
             print("limit - Validating limit...")
             print("limit - limits exceeds allowed boundary")
             print("limit - more stuff")
 
-        print("General stuff 1")
-        print("General stuff 2")
+        if limit > 50 and id == "vip":
+            print("ID and Limit - Mixed variables - opening...")
+            print("ID and Limit - Mixed variables - doing something")
+            print("ID and Limit - Mixed variables - last line")
+
+        print("Endpoint General stuff 1")
+        print("Endpoint General stuff 2")
+        print("Endpoint General stuff 3")
 
         status_code = 200
         answ = "All process carried out completely - request: {}".format(str(request))

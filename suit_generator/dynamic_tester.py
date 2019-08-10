@@ -4,7 +4,8 @@ import parameter_caster
 from endpoint import app
 import unittest
 
-logging.basicConfig(filename='dynamic_tester.log', level=logging.DEBUG)
+logging.basicConfig(filename='../logs/dynamic_tester.log', level=logging.DEBUG)
+
 
 class DynamicClassBase(unittest.TestCase):
     longMessage = True

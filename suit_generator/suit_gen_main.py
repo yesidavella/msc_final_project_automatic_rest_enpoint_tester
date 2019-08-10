@@ -1,9 +1,12 @@
-import subprocess, swagger_interpreter, logging
+import logging
+import subprocess
+import swagger_interpreter
+
+logging.basicConfig(filename='../logs/suit_gen_main.log', level=logging.DEBUG)
 
 if __name__ == '__main__':
 
     genes_dict = swagger_interpreter.get_genes_from_file()
-    # print(genes_dict)
 
     for path_key, path_value in genes_dict.items():
 
@@ -22,9 +25,10 @@ if __name__ == '__main__':
                 else:
                     genes_in_string_format += "%s=%s," % (gen.get_name(), gen.get_value())
 
+            logging.info("Suit_gen_main genes to invoke test {}".format(genes_in_string_format))
             print(genes_in_string_format)
 
-            exec_list_params = ['coverage', 'run', '--source=main_endpoint', 'test_endpoint_dynamically.py', genes_in_string_format]
+            exec_list_params = ['coverage', 'run', '--source=endpoint', 'dynamic_tester.py', genes_in_string_format]
             run_test_suite_proc = subprocess.Popen(exec_list_params, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             run_test_suite_proc.wait()
 
