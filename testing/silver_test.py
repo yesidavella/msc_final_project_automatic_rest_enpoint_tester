@@ -1,5 +1,4 @@
 from flask import Flask, request
-
 import unittest
 
 
@@ -38,28 +37,3 @@ class SilverTest:
         )
 
         return json_response
-        # return "hello"
-
-    # def init(self):
-    #     if __name__ == '__main__':
-    #         app.run(host='0.0.0.0', port=8484, debug=True)
-
-
-# def main():
-#     # silver = SilverTest()
-#     # silver.init()
-#
-#
-#     app.testing = True
-#     client = app.test_client()
-#
-#     with client:
-#         rv = client.get('/basic/45', query_string={'param': 'ccccccccccc'})
-#
-#         # rv = c.get('/?vodka=42')
-#         # # print( request.args['id'] )
-#
-#         print(rv._status)
-#         # silver.basic_get()
-#         # print(client)
-# main()
