@@ -1,10 +1,10 @@
 import sys
 
 
-def main(argv):
-
-    formatted = param_caster(argv)
-    print(formatted)
+# def main(argv):
+#
+#     formatted = param_caster(argv)
+#     print(formatted)
 
 
 def ger_params_as_tuple_list(argv):
@@ -29,7 +29,7 @@ def ger_params_as_tuple_list(argv):
     return param_array
 
 
-def get_coverage_percentage(bytes_object):
+def get_coverage_metrics(bytes_object):
     cov_metrics_dict = {}
 
     string_cov_info = bytes_object.decode().splitlines()
@@ -46,6 +46,11 @@ def get_coverage_percentage(bytes_object):
     return cov_metrics_dict
 
 
+def get_coverage_percentage(cov_metrics_dict):
+    cov_percentage = cov_metrics_dict["Cover"]
+    return int(cov_percentage.replace("%", ""))
+
+
 def clear_array_of_spaces(dirty_array):
 
     clean_title_list = []
@@ -56,7 +61,7 @@ def clear_array_of_spaces(dirty_array):
     return clean_title_list
 
 
-if __name__ == "__main__":
-    main(sys.argv)
+# if __name__ == "__main__":
+#     main(sys.argv)
 
 # param1=valueParam1,param2=valueParam2,param3=valueParam3

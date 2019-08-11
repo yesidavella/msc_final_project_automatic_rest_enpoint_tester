@@ -13,8 +13,6 @@ def get_genes_from_file():
     # Iterating over all paths (path is an structure in the swagger file)
     for path, info in paths.items():
 
-        print(path)
-
         verbs_dict = {}
         # Iterating over all verbs
         for verb, value in info.items():

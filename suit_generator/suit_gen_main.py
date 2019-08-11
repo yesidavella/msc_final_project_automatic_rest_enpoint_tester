@@ -9,36 +9,43 @@ if __name__ == '__main__':
 
     genes_dict = swagger_interpreter.get_genes_from_file()
 
+    REQ_COVERAGE = 85
+
     for path_key, path_value in genes_dict.items():
 
         for verbs_name, gen_list in path_value.items():
 
-            erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            erase_process.wait()
+            current_cov_per = 0;
 
-            # Iteration over genes
-            genes_in_string_format = ""
+            while REQ_COVERAGE > current_cov_per:
 
-            for index, gen in enumerate(gen_list, start=1):
-                gen.mutate()
-                if index == len(gen_list):
-                    genes_in_string_format += "%s=%s" % (gen.get_name(), gen.get_value())
-                else:
-                    genes_in_string_format += "%s=%s," % (gen.get_name(), gen.get_value())
+                erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                erase_process.wait()
 
-            logging.info("Suit_gen_main genes to invoke test {}".format(genes_in_string_format))
-            print(genes_in_string_format + " Verb name:" + verbs_name)
+                # Iteration over genes
+                genes_in_string_format = ""
 
-            exec_list_params = ['coverage', 'run', '--source=endpoint', 'dynamic_tester.py', genes_in_string_format]
-            run_test_suite_proc = subprocess.Popen(exec_list_params, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            run_test_suite_proc.wait()
+                for index, gen in enumerate(gen_list, start=1):
+                    gen.mutate()
+                    if index == len(gen_list):
+                        genes_in_string_format += "%s=%s" % (gen.get_name(), gen.get_value())
+                    else:
+                        genes_in_string_format += "%s=%s," % (gen.get_name(), gen.get_value())
 
-            console_coverage_report_process = subprocess.Popen(['coverage', 'report', '-m'],
-                                                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            stdout, stderr = console_coverage_report_process.communicate()
-            coverage_metrics_dict = parameter_caster.get_coverage_percentage(stdout)
+                logging.info("Suit_gen_main genes to invoke test {}".format(genes_in_string_format))
+                # print(genes_in_string_format + " Verb name:" + verbs_name)
 
-            print(str(coverage_metrics_dict))
+                exec_list_params = ['coverage', 'run', '--source=endpoint', 'dynamic_tester.py', genes_in_string_format]
+                run_test_suite_proc = subprocess.Popen(exec_list_params, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                run_test_suite_proc.wait()
 
-            erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            erase_process.wait()
+                console_coverage_report_process = subprocess.Popen(['coverage', 'report', '-m'],
+                                                                   stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                stdout, stderr = console_coverage_report_process.communicate()
+                coverage_metrics_dict = parameter_caster.get_coverage_metrics(stdout)
+
+                current_cov_per = parameter_caster.get_coverage_percentage(coverage_metrics_dict)
+
+                print(path_key + verbs_name + genes_in_string_format + " Cove %: " + str(current_cov_per))
+                # erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                # erase_process.wait()
