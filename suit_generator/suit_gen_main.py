@@ -2,6 +2,18 @@ import logging
 import subprocess
 import swagger_interpreter
 import parameter_caster
+import configparser
+
+
+config = configparser.ConfigParser()
+config.read('config.INI')
+
+# MUTATION_PERCENTAGE = int(config['GEN_ALG_PARAMS']['MUTATION_PERCENTAGE'])
+# CHAMPIONS_AMOUNT = int(config['GEN_ALG_PARAMS']['CHAMPIONS_AMOUNT'])
+# POPULATION_SIZE = int(config['GEN_ALG_PARAMS']['POPULATION_SIZE'])
+# KEEP_CHAMPIONS_IN_NEW_GENERATION = config['GEN_ALG_PARAMS']['KEEP_CHAMPIONS_IN_NEW_GENERATION'] == 'True'
+
+COVERAGE_TO_STOP = float(config['APP_PARAMS']['COVERAGE_TO_STOP'])
 
 logging.basicConfig(filename='../logs/suit_gen_main.log', level=logging.DEBUG)
 
@@ -9,15 +21,13 @@ if __name__ == '__main__':
 
     genes_dict = swagger_interpreter.get_genes_from_file()
 
-    REQ_COVERAGE = 85
-
     for path_key, path_value in genes_dict.items():
 
         for verbs_name, gen_list in path_value.items():
 
-            current_cov_per = 0;
+            current_cov_per = 0.0;
 
-            while REQ_COVERAGE > current_cov_per:
+            while COVERAGE_TO_STOP > current_cov_per:
 
                 erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 erase_process.wait()

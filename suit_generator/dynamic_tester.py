@@ -22,7 +22,7 @@ class TestProvider:
             with client:
                 resp = client.get('/basicget/' + str(kwargs["id"]), query_string={'limit': str(kwargs["limit"])})
                 # print(resp._status_code)
-                self.assertEqual(resp._status_code, 200, "Failed in test with name: "+kwargs["id"])
+                self.assertEqual(resp._status_code, 201, "Failed in test with name: "+kwargs["id"])
 
         return test_rest_endpoint
 
