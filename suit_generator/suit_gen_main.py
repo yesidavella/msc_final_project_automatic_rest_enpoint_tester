@@ -7,19 +7,15 @@ import configparser
 
 config = configparser.ConfigParser()
 config.read('config.INI')
-
-# MUTATION_PERCENTAGE = int(config['GEN_ALG_PARAMS']['MUTATION_PERCENTAGE'])
-# CHAMPIONS_AMOUNT = int(config['GEN_ALG_PARAMS']['CHAMPIONS_AMOUNT'])
-# POPULATION_SIZE = int(config['GEN_ALG_PARAMS']['POPULATION_SIZE'])
-# KEEP_CHAMPIONS_IN_NEW_GENERATION = config['GEN_ALG_PARAMS']['KEEP_CHAMPIONS_IN_NEW_GENERATION'] == 'True'
-
 COVERAGE_TO_STOP = float(config['APP_PARAMS']['COVERAGE_TO_STOP'])
+
+target_file = config['APP_PARAMS']['FILE_NAME_TO_GUESS_VALUES']
 
 logging.basicConfig(filename='../logs/suit_gen_main.log', level=logging.DEBUG)
 
 if __name__ == '__main__':
 
-    genes_dict = swagger_interpreter.get_genes_from_file()
+    genes_dict = swagger_interpreter.get_genes_from_file(target_file)
 
     for path_key, path_value in genes_dict.items():
 

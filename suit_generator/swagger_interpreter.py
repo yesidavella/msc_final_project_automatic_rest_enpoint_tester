@@ -4,13 +4,13 @@ from NumberGen import NumberGen
 import possible_values_parser
 
 
-def get_genes_from_file():
+def get_genes_from_file(target_file):
 
     parser = SwaggerParser(swagger_path='../swagger/swagger.json')
     paths = get_paths(parser)
 
     paths_dict = {}
-    dict_poss_numbers, dict_poss_string = possible_values_parser.load_possible_genes_values()
+    dict_poss_numbers, dict_poss_string = possible_values_parser.load_possible_genes_values(target_file)
 
     # Iterating over all paths (path is an structure in the swagger file)
     for path, info in paths.items():

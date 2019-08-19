@@ -1,12 +1,6 @@
 import re
 import configparser
-
-
-config = configparser.ConfigParser()
-config.read('config.INI')
-
-
-file = config['APP_PARAMS']['FILE_NAME_TO_GUESS_VALUES']
+import logging
 
 
 def replace(string, dict_replacements):
@@ -15,8 +9,8 @@ def replace(string, dict_replacements):
     return regex.sub(lambda match: dict_replacements[match.group(0)], string)
 
 
-def load_possible_genes_values():
-    with open(file, "r") as myfile:
+def load_possible_genes_values(target_file):
+    with open(target_file, "r") as myfile:
         data = myfile.readlines()
 
         dic_numbers = {}
@@ -38,6 +32,8 @@ def load_possible_genes_values():
                     clean_string = replace(possible_text, dict_replacements)
                     dic_strings[clean_string] = clean_string
 
+    logging.info("Possible values for Numbers: {}".format(dic_numbers))
+    logging.info("Possible values for Strings: {}".format(dic_strings))
     print(dic_numbers)
     print(dic_strings)
     return dic_numbers, dic_strings
