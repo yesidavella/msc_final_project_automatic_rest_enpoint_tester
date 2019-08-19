@@ -13,6 +13,30 @@ target_file = config['APP_PARAMS']['FILE_NAME_TO_GUESS_VALUES']
 
 logging.basicConfig(filename='../logs/suit_gen_main.log', level=logging.DEBUG)
 
+
+def mutual_elimination(new_dict, old_dict):
+
+    temp_array = []
+    for old_miss_line in old_dict:
+        if old_miss_line in new_dict:
+            item = new_dict.pop(old_miss_line)
+            temp_array.append(item)
+
+    for item in temp_array:
+        old_dict.pop(item)
+
+    for new_miss_line in new_dict:
+        if new_miss_line in old_dict:
+            old_dict.pop(new_miss_line)
+
+    return new_dict, old_dict
+
+
+def reset_optimal_set(opt_dict):
+    for key in opt_dict:
+        opt_dict[key][1] = False
+
+
 if __name__ == '__main__':
 
     genes_dict = swagger_interpreter.get_genes_from_file(target_file)
@@ -22,6 +46,8 @@ if __name__ == '__main__':
         for verbs_name, gen_list in path_value.items():
 
             current_cov_per = 0.0;
+
+            dict_optimal_set = {}
 
             while COVERAGE_TO_STOP > current_cov_per:
 
@@ -52,6 +78,40 @@ if __name__ == '__main__':
 
                 current_cov_per = parameter_caster.get_coverage_percentage(coverage_metrics_dict)
 
-                print(path_key + verbs_name + genes_in_string_format + " Cove %: " + str(current_cov_per))
+                if not bool(dict_optimal_set):
+                    dict_optimal_set[path_key+verbs_name+genes_in_string_format] = [ coverage_metrics_dict["detail_missing_lines"], False]
+                else:
+                    add_to_opt = True;
+                    for key in dict_optimal_set:
+
+                        new_dict, old_dict = mutual_elimination(coverage_metrics_dict["detail_missing_lines"].copy(), dict_optimal_set[key][0].copy())
+
+                        new_is_empty = not bool(new_dict)
+                        old_is_empty = not bool(old_dict)
+
+                        if (old_is_empty):
+                            add_to_opt = False
+                            break
+                        elif new_is_empty and not old_is_empty:
+                            dict_optimal_set[key][1] = True
+                        elif not new_is_empty and not old_is_empty:
+                            dict_optimal_set[key][1] = False
+
+                    list_del_opt = []
+                    for key in dict_optimal_set:
+                        if dict_optimal_set[key][1]:
+                            list_del_opt.append(key)
+
+                    for key in list_del_opt:
+                        dict_optimal_set.pop(key)
+
+                    if add_to_opt:
+                        dict_optimal_set[path_key+verbs_name+genes_in_string_format] = [coverage_metrics_dict["detail_missing_lines"], False]
+
+                    reset_optimal_set(dict_optimal_set)
+
+
+                print(str(dict_optimal_set))
+                #print(path_key + verbs_name + genes_in_string_format + " Cove %: " + str(current_cov_per))
                 # erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 # erase_process.wait()

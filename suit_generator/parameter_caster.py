@@ -43,6 +43,26 @@ def get_coverage_metrics(bytes_object):
     for index, title in enumerate(clear_title_array):
         cov_metrics_dict[title] = clear_value_array[index]
 
+    #set_pending_lines_as_array()
+    missing_lines_one_by_one_dict = {}
+    missing_lines_in_segments = cov_metrics_dict["Missing"].split(",")
+
+    for line_segment in missing_lines_in_segments:
+
+        if "-" in line_segment:
+            bounds = line_segment.split("-")
+            left_bound = int(bounds[0])
+            right_bound = int(bounds[1])
+
+            i = left_bound
+            while i <= right_bound:
+                missing_lines_one_by_one_dict[i] = i
+                i += 1
+        else:
+            missing_lines_one_by_one_dict[int(line_segment.strip())] = int(line_segment.strip())
+
+    cov_metrics_dict["detail_missing_lines"] = missing_lines_one_by_one_dict
+
     return cov_metrics_dict
 
 

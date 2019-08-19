@@ -30,6 +30,17 @@ class DynamicTester:
             print("ID and Limit - Mixed variables - doing something")
             print("ID and Limit - Mixed variables - last line")
 
+        if limit <= 10:
+            print("limit - Validating limit...")
+            print("limit - limits exceeds allowed boundary")
+            print("limit - more stuff")
+
+        if 20 <= limit <= 40:
+            print("limit - Validating limit...")
+            print("limit - limits exceeds allowed boundary")
+            print("limit - more stuff")
+
+
         print("Endpoint General stuff 1")
         print("Endpoint General stuff 2")
         print("Endpoint General stuff 3")
