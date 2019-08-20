@@ -37,6 +37,15 @@ def reset_optimal_set(opt_dict):
         opt_dict[key][1] = False
 
 
+def print_in_readable_format(dict_optimal_set):
+
+    print("///////////////////////Printing current optimal set of test cases//////////////")
+    for index, key in enumerate(dict_optimal_set):
+        ids_and_params_array = key.split("-*")
+        path_and_verb = ids_and_params_array[0].split("-")
+        print("{}. Path:{}, Verb:{}, Parameters:{}".format(index+1, path_and_verb[0], path_and_verb[1], ids_and_params_array[1]))
+
+
 if __name__ == '__main__':
 
     genes_dict = swagger_interpreter.get_genes_from_file(target_file)
@@ -78,8 +87,9 @@ if __name__ == '__main__':
 
                 current_cov_per = parameter_caster.get_coverage_percentage(coverage_metrics_dict)
 
+                test_case_id = "{}-{}-*{}".format(path_key, verbs_name, genes_in_string_format)
                 if not bool(dict_optimal_set):
-                    dict_optimal_set[path_key+verbs_name+genes_in_string_format] = [ coverage_metrics_dict["detail_missing_lines"], False]
+                    dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False]
                 else:
                     add_to_opt = True;
                     for key in dict_optimal_set:
@@ -106,12 +116,13 @@ if __name__ == '__main__':
                         dict_optimal_set.pop(key)
 
                     if add_to_opt:
-                        dict_optimal_set[path_key+verbs_name+genes_in_string_format] = [coverage_metrics_dict["detail_missing_lines"], False]
+                        dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False]
 
                     reset_optimal_set(dict_optimal_set)
 
 
-                print(str(dict_optimal_set))
+                print_in_readable_format(dict_optimal_set)
+                # print(str(dict_optimal_set))
                 #print(path_key + verbs_name + genes_in_string_format + " Cove %: " + str(current_cov_per))
                 # erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 # erase_process.wait()
