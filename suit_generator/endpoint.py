@@ -14,13 +14,14 @@ class DynamicTester:
         answ = None
         status_code = None
         limit = request.args.get("limit", 0, type=int)
+        type = request.args.get("type", "typeDefaultValue", type=str)
 
         if id == "vip":
             print("ID - Querying DB - opening...")
             print("ID - Querying DB - validating resultset")
             print("ID - Querying DB - setting some data")
 
-        if limit > 80:
+        if limit >= 80:
             print("limit - Validating limit...")
             print("limit - limits exceeds allowed boundary")
             print("limit - more stuff")
@@ -39,6 +40,11 @@ class DynamicTester:
             print("limit - Validating limit...")
             print("limit - limits exceeds allowed boundary")
             print("limit - more stuff")
+
+        if type == "hello":
+            print("type = hello - Validating type...")
+            print("type = hello - third parameter")
+            print("type = hello - more stuff")
 
 
         print("Endpoint General stuff 1")
