@@ -39,6 +39,13 @@
             "type": "string"
           },
           {
+            "name": "type",
+            "in": "query",
+            "description": "limited to a type",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "limit",
             "in": "query",
             "type": "integer",
