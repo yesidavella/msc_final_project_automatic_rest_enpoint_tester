@@ -37,9 +37,9 @@ def reset_optimal_set(opt_dict):
         opt_dict[key][1] = False
 
 
-def print_in_readable_format(dict_optimal_set):
+def print_in_readable_format(iterator_counter, dict_optimal_set):
 
-    print("///////////////////////Printing current optimal set of test cases//////////////")
+    print("///////////////////////Printing current optimal set of test cases in iteration: {} ////////////////////////".format(iterator_counter))
     for index, key in enumerate(dict_optimal_set):
         ids_and_params_array = key.split("-*")
         path_and_verb = ids_and_params_array[0].split("-")
@@ -58,7 +58,9 @@ if __name__ == '__main__':
 
             dict_optimal_set = {}
 
+            iterator_counter = 0
             while COVERAGE_TO_STOP > current_cov_per:
+                iterator_counter +=1
 
                 erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 erase_process.wait()
@@ -121,7 +123,7 @@ if __name__ == '__main__':
                     reset_optimal_set(dict_optimal_set)
 
 
-                print_in_readable_format(dict_optimal_set)
+                print_in_readable_format(iterator_counter, dict_optimal_set)
                 # print(str(dict_optimal_set))
                 #print(path_key + verbs_name + genes_in_string_format + " Cove %: " + str(current_cov_per))
                 # erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
