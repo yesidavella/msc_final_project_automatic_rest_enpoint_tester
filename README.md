@@ -13,7 +13,7 @@ Only GET and DELETE methods will be covered in the proposal. As it was exposed, 
 3. Install coverage as dependency in Python environment
 4. local_project_folder/suit_generator$ python suit_gen_main.py 
 Then, you will see
-[![](https://raw.githubusercontent.com/yesidavella/agenetic_rest_tester/master/executing.png?token=ADLKA7ZEEGSPWN7DGGKUKWS5LXZU6)](https://raw.githubusercontent.com/yesidavella/agenetic_rest_tester/master/executing.png?token=ADLKA7ZEEGSPWN7DGGKUKWS5LXZU6)
+[http://github.com/yesidavella/agenetic_rest_tester/blob/master/executing.png](http://github.com/yesidavella/agenetic_rest_tester/blob/master/executing.png)
 It means that the project is running and testing and endpoint to find the optimal unit test suite.
 
 ### Prerequisites and Installing
