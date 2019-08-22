@@ -166,7 +166,3 @@ if __name__ == '__main__':
 
 
                 print_in_readable_format(iterator_counter, global_cov_per, dict_optimal_set)
-                # print(str(dict_optimal_set))
-                #print(path_key + verbs_name + genes_in_string_format + " Cove %: " + str(current_cov_per))
-                # erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                # erase_process.wait()
