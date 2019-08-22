@@ -3,6 +3,7 @@ import subprocess
 import swagger_interpreter
 import parameter_caster
 import configparser
+import xml.dom.minidom
 
 
 config = configparser.ConfigParser()
@@ -46,6 +47,42 @@ def print_in_readable_format(iterator_counter, dict_optimal_set):
         print("{}. Path:{}, Verb:{}, Parameters:{}".format(index+1, path_and_verb[0], path_and_verb[1], ids_and_params_array[1]))
 
 
+def load_system_metrics():
+    exec_list_params = ['coverage', 'xml']
+    run_test_suite_proc = subprocess.Popen(exec_list_params, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    run_test_suite_proc.wait()
+    coverage_xml_doc = xml.dom.minidom.parse("coverage.xml")
+    lines = coverage_xml_doc.getElementsByTagName("line")
+
+    total_lines_list = []
+    for line in lines:
+        total_lines_list.append(int(line.getAttribute("number")))
+
+    return total_lines_list
+
+
+def evaluate_coverage(opt_set_dict, lines_to_cover_list):
+
+    still_pending = []
+
+    for line_to_cover in lines_to_cover:
+
+        for one_test_case in opt_set_dict.values():
+
+            if line_to_cover in one_test_case[0].values():
+                if line_to_cover not in still_pending:
+                    still_pending.append(line_to_cover)
+            else:
+                if line_to_cover in still_pending:
+                    still_pending.remove(line_to_cover)
+                break
+    return still_pending
+
+
+
+
+
+
 if __name__ == '__main__':
 
     genes_dict = swagger_interpreter.get_genes_from_file(target_file)
@@ -57,6 +94,7 @@ if __name__ == '__main__':
             current_cov_per = 0.0;
 
             dict_optimal_set = {}
+            lines_to_cover = []
 
             iterator_counter = 0
             while COVERAGE_TO_STOP > current_cov_per:
@@ -78,7 +116,7 @@ if __name__ == '__main__':
                 logging.info("Suit_gen_main genes to invoke test {}".format(genes_in_string_format))
                 # print(genes_in_string_format + " Verb name:" + verbs_name)
 
-                exec_list_params = ['coverage', 'run', '--source=endpoint', 'dynamic_tester.py', genes_in_string_format]
+                exec_list_params = ['coverage', 'run', '-a', '--source=endpoint', 'dynamic_tester.py', genes_in_string_format]
                 run_test_suite_proc = subprocess.Popen(exec_list_params, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 run_test_suite_proc.wait()
 
@@ -92,35 +130,41 @@ if __name__ == '__main__':
                 test_case_id = "{}-{}-*{}".format(path_key, verbs_name, genes_in_string_format)
                 if not bool(dict_optimal_set):
                     dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False]
+                    lines_to_cover = load_system_metrics()
                 else:
-                    add_to_opt = True;
-                    for key in dict_optimal_set:
 
-                        new_dict, old_dict = mutual_elimination(coverage_metrics_dict["detail_missing_lines"].copy(), dict_optimal_set[key][0].copy())
+                    if test_case_id not in dict_optimal_set:
 
-                        new_is_empty = not bool(new_dict)
-                        old_is_empty = not bool(old_dict)
+                        add_to_opt = True;
+                        for key in dict_optimal_set:
 
-                        if (old_is_empty):
-                            add_to_opt = False
-                            break
-                        elif new_is_empty and not old_is_empty:
-                            dict_optimal_set[key][1] = True
-                        elif not new_is_empty and not old_is_empty:
-                            dict_optimal_set[key][1] = False
+                            new_dict, old_dict = mutual_elimination(coverage_metrics_dict["detail_missing_lines"].copy(), dict_optimal_set[key][0].copy())
 
-                    list_del_opt = []
-                    for key in dict_optimal_set:
-                        if dict_optimal_set[key][1]:
-                            list_del_opt.append(key)
+                            new_is_empty = not bool(new_dict)
+                            old_is_empty = not bool(old_dict)
 
-                    for key in list_del_opt:
-                        dict_optimal_set.pop(key)
+                            if (old_is_empty):
+                                add_to_opt = False
+                                break
+                            elif new_is_empty and not old_is_empty:
+                                dict_optimal_set[key][1] = True
+                            elif not new_is_empty and not old_is_empty:
+                                dict_optimal_set[key][1] = False
 
-                    if add_to_opt:
-                        dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False]
+                        list_del_opt = []
+                        for key in dict_optimal_set:
+                            if dict_optimal_set[key][1]:
+                                list_del_opt.append(key)
 
-                    reset_optimal_set(dict_optimal_set)
+                        for key in list_del_opt:
+                            dict_optimal_set.pop(key)
+
+                        if add_to_opt:
+                            dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False]
+
+                        reset_optimal_set(dict_optimal_set)
+
+                        evaluate_coverage(dict_optimal_set, lines_to_cover.copy())
 
 
                 print_in_readable_format(iterator_counter, dict_optimal_set)
