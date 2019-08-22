@@ -40,11 +40,11 @@ def reset_optimal_set(opt_dict):
 
 def print_in_readable_format(iterator_counter, coverage_percentage, dict_optimal_set):
 
-    print("///////////////////////Printing current optimal set of test cases in iteration: {}, Percentage achieved: {}% ////////////////////////".format(iterator_counter, coverage_percentage))
+    print("///////////////////////Printing current optimal set of test cases in iteration: {}, Percentage achieved: {} % ////////////////////////".format(iterator_counter, coverage_percentage))
     for index, key in enumerate(dict_optimal_set):
         ids_and_params_array = key.split("-*")
         path_and_verb = ids_and_params_array[0].split("-")
-        print("{}. Path:{}, Verb:{}, Parameters:{}".format(index+1, path_and_verb[0], path_and_verb[1], ids_and_params_array[1]))
+        print("{}. Path:{}, Verb:{}, Parameters:{}, Local Coverage: {} %".format(index+1, path_and_verb[0], path_and_verb[1], ids_and_params_array[1], dict_optimal_set[key][2]))
 
 
 def load_system_metrics():
@@ -89,12 +89,13 @@ if __name__ == '__main__':
         for verbs_name, gen_list in path_value.items():
 
             current_cov_per = 0.0;
+            global_cov_per = 0.0;
 
             dict_optimal_set = {}
             lines_to_cover = []
 
             iterator_counter = 0
-            while COVERAGE_TO_STOP > current_cov_per:
+            while COVERAGE_TO_STOP > global_cov_per:
                 iterator_counter +=1
 
                 erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -122,12 +123,13 @@ if __name__ == '__main__':
                 stdout, stderr = console_coverage_report_process.communicate()
                 coverage_metrics_dict = parameter_caster.get_coverage_metrics(stdout)
 
-                # current_cov_per = parameter_caster.get_coverage_percentage(coverage_metrics_dict)
+                current_cov_per = parameter_caster.get_coverage_percentage(coverage_metrics_dict)
 
                 test_case_id = "{}-{}-*{}".format(path_key, verbs_name, genes_in_string_format)
                 if not bool(dict_optimal_set):
-                    dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False]
+                    dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False, current_cov_per]
                     lines_to_cover = load_system_metrics()
+                    global_cov_per = current_cov_per
                 else:
 
                     if test_case_id not in dict_optimal_set:
@@ -157,14 +159,13 @@ if __name__ == '__main__':
                             dict_optimal_set.pop(key)
 
                         if add_to_opt:
-                            dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False]
+                            dict_optimal_set[test_case_id] = [coverage_metrics_dict["detail_missing_lines"], False, current_cov_per]
 
                         reset_optimal_set(dict_optimal_set)
+                        global_cov_per = evaluate_coverage(dict_optimal_set, lines_to_cover)
 
-                        current_cov_per = evaluate_coverage(dict_optimal_set, lines_to_cover.copy())
 
-
-                print_in_readable_format(iterator_counter, current_cov_per, dict_optimal_set)
+                print_in_readable_format(iterator_counter, global_cov_per, dict_optimal_set)
                 # print(str(dict_optimal_set))
                 #print(path_key + verbs_name + genes_in_string_format + " Cove %: " + str(current_cov_per))
                 # erase_process = subprocess.Popen(['coverage', 'erase'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
